@@ -1,0 +1,82 @@
+/**
+ * Created by kule on 2016/10/18.
+ */
+
+window.SHOWDEBUG={
+    json:false,
+    type:1//0不显示任何消息，1显示所有消息，2显示warn消息和err消息，3显示err消息
+};
+const _console=window.console;
+const safeJson=function(json){
+    if(typeof json!='string'){
+        return json;
+    }
+    try{
+        json=JSON.parse(json);
+    }catch(ex){
+        console.log('safeJson失败:');
+        console.log(json);
+    }
+    return json;
+};
+
+const _log=function(type='log',tip='',...objs){
+    const enable=window.SHOWDEBUG;
+    const fn=_console[type];
+    if(objs.length<1){
+        fn(tip);
+        return;
+    }
+    if(enable.json){
+        let index=0;
+        tip=tip.replace(_log.regJson,()=>{
+            return safeJson(objs[index]);
+        });
+        fn(tip);
+        return;
+    }
+    if(tip.match(_log.regFormatFlag)){
+        fn(tip,...objs);
+        return;
+    }
+    fn(`${tip}`);
+    _console.log('--------------');
+    for(let i=0,il=objs.length;i<il;i++){
+        _console.log(objs[i]);
+    }
+    _console.log('--------------');
+};
+_log.regFormatFlag=/%[oOdisfc]/g;
+_log.regJson=/%j/g;
+
+const log=function(...args){
+    const enable=window.SHOWDEBUG;
+    if(!enable.type||enable.type>1)return;
+    _log.apply(null,['log',...args]);
+};
+log.warn=function(...args){
+    const enable=window.SHOWDEBUG;
+    if(!enable.type||enable.type>2)return;
+    _log.apply(null,['warn',...args]);
+};
+log.error=function(...args){
+    const enable=window.SHOWDEBUG;
+    if(!enable.type||enable.type>3)return;
+    _log.apply(null,['error',...args]);
+};
+
+const console={
+    log,
+    warn:log.warn,
+    error:log.error
+};
+for(var k in _console){
+    if(k=='log'||k=='warn'||k=='error')continue;
+    console[k]=_console[k];
+}
+
+export default log;
+export {
+    log,
+    console
+}

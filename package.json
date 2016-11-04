@@ -1,0 +1,18 @@
+{
+  "name": "z2-log",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "jsn-watch": "jsn-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git@github.com:kulwe/z2-log.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsn-watch": "^0.0.4"
+  }
+}
