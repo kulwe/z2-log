@@ -19,10 +19,14 @@ const safeJson=function(json){
     }
     return json;
 };
-
+const getLog=function(fn){
+    return function(){
+        fn.apply(_console,arguments);
+    };
+};
 const _log=function(type='log',tip='',...objs){
     const enable=window.SHOWDEBUG;
-    const fn=_console[type];
+    const fn=getLog(_console[type]);
     if(objs.length<1){
         fn(tip);
         return;
@@ -39,10 +43,10 @@ const _log=function(type='log',tip='',...objs){
         fn(tip,...objs);
         return;
     }
-    fn(`${tip}`);
+    fn(`${tip}`)
     _console.log('--------------');
     for(let i=0,il=objs.length;i<il;i++){
-        _console.log(objs[i]);
+        fn(objs[i]);
     }
     _console.log('--------------');
 };

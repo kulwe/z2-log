@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 window.SHOWDEBUG = {
     json: false,
@@ -22,17 +22,21 @@ var safeJson = function safeJson(json) {
     }
     return json;
 };
-
+var getLog = function getLog(fn) {
+    return function () {
+        fn.apply(_console, arguments);
+    };
+};
 var _log = function _log() {
     for (var _len = arguments.length, objs = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
         objs[_key - 2] = arguments[_key];
     }
 
-    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'log';
-    var tip = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var type = arguments.length <= 0 || arguments[0] === undefined ? 'log' : arguments[0];
+    var tip = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
 
     var enable = window.SHOWDEBUG;
-    var fn = _console[type];
+    var fn = getLog(_console[type]);
     if (objs.length < 1) {
         fn(tip);
         return;
@@ -58,7 +62,7 @@ var _log = function _log() {
     fn('' + tip);
     _console.log('--------------');
     for (var i = 0, il = objs.length; i < il; i++) {
-        _console.log(objs[i]);
+        fn(objs[i]);
     }
     _console.log('--------------');
 };
